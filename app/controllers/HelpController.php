@@ -14,7 +14,8 @@ class HelpController extends ControllerBase
             $this->view->setVar("message", $m_error->m_error_message);
             $this->view->setVar("action", $m_error->m_error_action);
         }else{
-            $this->view->setVar("message", "エラー");
+            $this->view->setVar("message", "システムエラー");
+
         }
     }
     
