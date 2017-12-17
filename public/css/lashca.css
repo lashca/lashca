@@ -1,0 +1,21 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.bg-gray{
+    color: #ffffff;
+    background-color: #708090;
+}
+.bg-inverse{
+    background-color: #708090 !important;
+}
+.jumbotron{
+    padding-top: 7rem;
+    background: #708090 url(../img/bg-header.png) no-repeat center bottom;
+    background-size: cover;
+}
+.icon-logo{
+    background: url(../img/logo_wh.png) no-repeat center bottom;
+}
+.start-btn{
+    font-size: 1.5rem;
+}
