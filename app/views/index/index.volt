@@ -57,7 +57,7 @@
             </li>
             <li class="navbar-divider hidden-sm-down"></li>
             <li class="nav-item nav-item-toggable">
-              <a class="nav-link" href="ui-elements.html">ログイン</a>
+              <a class="nav-link" href="/signup/login">ログイン</a>
             </li>
 
             <li class="nav-item nav-item-toggable hidden-md-up">

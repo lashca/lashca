@@ -1,6 +1,5 @@
 <h1>本登録</h1>
 <hr/>
-{{ dump(errormessage)}}
 <form action="/signup/registration" method="post">
 E-mail:{{ email }}<br/>
 お名前：姓<input type="text" name="m_user_lastname" size="30" maxlength="500" id="m_user_lastname" value="{{ data["m_user_lastname"] }}"/>名<input type="text" name="m_user_firstname" size="30" maxlength="500" id="m_user_firstname" value="{{ data["m_user_firstname"] }}"/>{{ errormessage["m_user_name"] }}<br/>

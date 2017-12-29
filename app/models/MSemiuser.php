@@ -93,7 +93,6 @@ class MSemiuser extends ModelBase
      */
     public function initialize()
     {
-        $this->setSchema("lashca");
         $this->setSource("m_semiuser");
     }
 

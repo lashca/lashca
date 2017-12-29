@@ -18,6 +18,7 @@ class ControllerBase extends Controller
         $this->view->title = "Lashca ";
 
         $this->data =  $this->request->getPost();
+        $this->data = $this->trimSpace($this->data);
     }
 
     public function getErrorMessages($modelInstance)

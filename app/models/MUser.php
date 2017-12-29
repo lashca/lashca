@@ -80,7 +80,6 @@ class MUser extends ModelBase
      */
     public function initialize()
     {
-        $this->setSchema("lashca");
         $this->setSource("m_user");
         $this->hasMany('m_user_id', 'MActiveuser', 'm_user_id', ['alias' => 'MActiveuser']);
         $this->hasMany('m_user_id', 'MNote', 'm_user_id', ['alias' => 'MNote']);

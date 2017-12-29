@@ -5,9 +5,16 @@ use Phalcon\Http\Request;
 
 class UserController extends ControllerBase
 {
+    public function beforeExecuteRoute()
+    {
+        parent::beforeExecuteRoute();
+
+    }
+
     public function indexAction()
     {
-        $this->view->title .= "ユーザ情報";
+        $this->view->title .= "メニュー";
+        $this->view->setVar("user", $this->session->get("user"));
     }
 
     public function completeAction()
@@ -16,10 +23,7 @@ class UserController extends ControllerBase
         $this->view->title .= "ユーザ情報変更完了";
     }
 
-    public function loginAction()
-    {
-        $this->view->title .= "ログイン";
-    }
+    
 
     public function resetAction()
     {

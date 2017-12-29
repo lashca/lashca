@@ -40,7 +40,6 @@ class MActiveuser extends ModelBase
      */
     public function initialize()
     {
-        $this->setSchema("lashca");
         $this->setSource("m_activeuser");
         $this->belongsTo('m_user_id', '\MUser', 'm_user_id', ['alias' => 'MUser']);
     }

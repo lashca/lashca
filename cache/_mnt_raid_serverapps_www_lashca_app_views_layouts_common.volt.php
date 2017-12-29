@@ -28,6 +28,8 @@
         <link rel="stylesheet" href="/css/landio.css">
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/lashca.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script src="/js/landio.min.js"></script>
 </head>
 
 <body>
@@ -42,8 +44,8 @@
 <?= $this->partial('layouts/partial/footer') ?>
   
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="/js/landio.min.js"></script>
+
+
 </body>
 </html>
   

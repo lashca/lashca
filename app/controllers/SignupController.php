@@ -3,7 +3,15 @@
 use Phalcon\Http\Request;
 
 class SignupController extends ControllerBase
-{      
+{
+    public function beforeExecuteRoute()
+    {
+        parent::beforeExecuteRoute();
+        if($this->session->has("m_user_id")) {
+            $this->response->redirect("/menu");
+        }
+    }
+
     public function indexAction()
     {
         $this->view->title .= "仮登録";
@@ -11,7 +19,6 @@ class SignupController extends ControllerBase
         $request = new Request();
         if ($request->isPost() == true) {
             $semiuser = new MSemiuser();
-            $this->data = $this->trimSpace($this->data);
             $semiuser->m_semiuser_mail = $this->data[m_semiuser_mail];
             if ($semiuser->save() === false)
             {
@@ -65,7 +72,6 @@ class SignupController extends ControllerBase
         $request = new Request();
         $this->session->start();
         if ($request->isPost() == true and $this->session->has("m_semiuser_mail")) {
-            $this->data = $this->trimSpace($this->data);
             $avtiveuser = new VActiveuser();
             $avtiveuser->m_user_lastname = $this->data['m_user_lastname'];
             $avtiveuser->m_user_firstname = $this->data['m_user_firstname'];
@@ -77,12 +83,14 @@ class SignupController extends ControllerBase
             if ($avtiveuser->save() === false)
             {
                 $message = $this->getErrorMessages($avtiveuser);
-                if(strlen($message)==0)$this->response->redirect("/help?c=002");
+                if(count($message)==0)$this->response->redirect("/help?c=002");
                 $this->view->setVar("email", $this->session->get("m_semiuser_mail"));
-                $this->view->setVar("errormessage", $this->getErrorMessages($avtiveuser));
+                $this->view->setVar("errormessage", $message);
             }else{
                 $this->session->set("m_user_id", $avtiveuser->m_user_id);
-                $this->view->setVar("email", $avtiveuser->m_user_id);
+                $this->session->set("m_user_lastname", $avtiveuser->m_user_lastname);
+                $this->session->set("m_user_firstname", $avtiveuser->m_user_firstname);
+                $this->session->set("m_user_mail", $avtiveuser->m_user_mail);
                 $this->response->redirect("/menu");
             }
         }else{
@@ -99,5 +107,123 @@ class SignupController extends ControllerBase
         if($this->data['m_user_birthday_day']=="")$this->data['m_user_birthday_day']="'--'";
         $this->view->setVar("data", $this->data);
     }
-}
 
+    public function loginAction()
+    {
+        $this->view->title .= "ログイン";
+
+        $request = new Request();
+        if ($request->isPost() == true) {
+            $avtiveuser = VActiveuser::findEmail($this->data["m_user_mail"],$this->data['pass']);
+            if ($avtiveuser->m_user_id > 0) {
+                $this->session->start();
+                $this->session->set("m_user_id", $avtiveuser->m_user_id);
+                $this->session->set("m_user_lastname", $avtiveuser->m_user_lastname);
+                $this->session->set("m_user_firstname", $avtiveuser->m_user_firstname);
+                $this->session->set("m_user_mail", $avtiveuser->m_user_mail);
+                if($this->session->has("url")) {
+                    $this->response->redirect($this->session->get("url"));
+                }else{
+                    $this->response->redirect("/menu");
+                }
+            }else{
+                $this->view->setVar("data", $this->data);
+                $this->view->setVar("errormessage", "メールアドレスまたはパスワードが間違ってます。");
+            }
+        }
+    }
+
+    public function forgotAction()
+    {
+        $this->view->title .= "パスワード再登録依頼";
+
+        $request = new Request();
+        if ($request->isPost() == true) {
+            $forgotuser = new MForgotuser();
+            $forgotuser->m_forgotuser_mail = $this->data[m_forgotuser_mail];
+            $this->session->start();
+            if(MForgotuser::mailExists($forgotuser->m_forgotuser_mail)){
+                $this->session->set("sendFlag", false);
+            }else{
+                $this->session->set("sendFlag", true);
+            }
+            if ($forgotuser->save() === false)
+            {
+                $this->view->setVar("data", $this->data);
+                $this->view->setVar("errormessage", $this->getErrorMessages($forgotuser));
+            }else{
+                $this->session->start();
+                $this->session->set("m_forgotuser_id", $forgotuser->m_forgotuser_id);
+                $this->session->set("m_forgotuser_mail", $forgotuser->m_forgotuser_mail);
+                $this->session->set("pass", $forgotuser->pass);
+                $this->response->redirect("/signup/forgotcomplete");
+            }
+        }
+    }
+
+    public function forgotcompleteAction()
+    {
+        $this->view->title .= "パスワード再登録受付完了";
+
+        if(!$this->session->has("m_forgotuser_mail") or !MForgotuser::mailExists($this->session->get("m_forgotuser_mail"))) {
+            $this->response->redirect("/signup/forgot");
+        }
+        if($this->session->get('sendFlag')){
+            $title = "【Lashca】パスワードの再発行";
+            $body = "お世話になっております。"."\n";
+            $body .= "Lashcaサポートセンターでございます。"."\n\n";
+            $body .= "パスワードの再発行しました。"."\n\n";
+            $body .= "URL: https://".$_SERVER['HTTP_HOST']."/signup/reset/".$this->session->get('pass').$this->session->get('m_forgotuser_id')."\n";
+            $body .= "ログイン後必ずパスワードの再設定を行ってください。"."\n\n";
+            $body .= "何卒よろしくお願いいたします。"."\n\n";
+            $body .= "―――――――――――――――――――――――――――――――"."\n";
+            $body .= "Copyright (C) ".date("Y",time())." Lashca.com all rights reserved.";
+            mb_send_mail($this->session->get('m_forgotuser_mail'), $title, $body, "From: ".$this->lashcamail);
+        }
+        $this->session->destroy();
+    }
+
+    public function resetAction($passid)
+    {
+        $this->view->title .= "パスワード再登録";
+
+        $request = new Request();
+        $this->session->start();
+        if ($request->isPost() == true and $this->session->has("m_forgotuser_mail")) {
+            $avtiveuser = new VActiveuser();
+            $avtiveuser->pass = $this->data['pass'];
+            $avtiveuser->m_user_mail = $this->session->get("m_forgotuser_mail");
+            if ($avtiveuser->updatePass() === false)
+            {
+                $message = $this->getErrorMessages($avtiveuser);
+                $this->view->setVar("email", $this->session->get("m_forgotuser_mail"));
+                $this->view->setVar("errormessage", $message);
+            }else{
+                $this->session->set("m_user_lastname", $avtiveuser->m_user_lastname);
+                $this->session->set("m_user_firstname", $avtiveuser->m_user_firstname);
+                $this->session->set("m_user_mail", $avtiveuser->m_user_mail);
+                $this->response->redirect("/signup/resetcomplete");
+            }
+        }else{
+            $forgotuser = MForgotuser::getForgetUser($passid);
+            if($forgotuser->m_forgotuser_id>0){
+                $this->session->set("m_forgotuser_mail", $forgotuser->m_forgotuser_mail);
+                $this->view->setVar("email", $forgotuser->m_forgotuser_mail);
+            }else{
+                $this->response->redirect("/help?c=000");
+            }
+        }
+        $this->view->setVar("data", $this->data);
+    }
+
+    public function resetcompleteAction(){
+        $this->view->title .= "パスワード再登録完了";
+        if ($this->session->has("m_user_mail")) {
+            $activeuser = VActiveuser::findId($this->session->get("m_user_mail"));+
+            $this->session->set("m_user_id", $avtiveuser->m_user_id);
+            
+        }else{
+            $this->response->redirect("/help?c=000");
+        }
+    }
+}

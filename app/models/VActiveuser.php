@@ -173,7 +173,6 @@ class VActiveuser extends ModelBase
      */
     public function initialize()
     {
-        $this->setSchema("lashca");
         $this->setSource("v_activeuser");
     }
 
@@ -207,6 +206,27 @@ class VActiveuser extends ModelBase
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
+    }
+
+    public static function findId($m_user_mail)
+    {
+        $user = new VActiveuser();
+        $m_user_hash = hash_hmac("sha256",$pass,$user->secret);
+        $conditions = "m_user_mail = :m_user_mail:";
+        $parameters = array("m_user_mail" => $m_user_mail);
+        return VActiveuser::findFirst(array($conditions,"bind" => $parameters));
+    }
+
+    public static function findEmail($m_user_mail,$pass)
+    {
+        $user = new VActiveuser();
+        $m_user_hash = hash_hmac("sha256",$pass,$user->secret);
+        $conditions = "m_user_mail = :m_user_mail: AND m_user_hash = :m_user_hash:";
+        $parameters = array("m_user_mail" => $m_user_mail,"m_user_hash" => $m_user_hash);
+        return VActiveuser::findFirst(array(
+            $conditions,
+            "bind" => $parameters
+        ));
     }
 
     public function save($data=null, $whiteList=null)
@@ -252,5 +272,47 @@ class VActiveuser extends ModelBase
         }else{
             return false;
         }
+    }
+
+    public function updatePass(){
+        $conditions = "m_user_mail = :m_user_mail:";
+        $parameters = array("m_user_mail" => $this->m_user_mail);
+        $activeuser =  VActiveuser::findFirst(array($conditions,"bind" => $parameters));
+        $activeuser->pass = $this->pass;
+        $activeuser->m_user_hash = hash_hmac("sha256",$this->pass,$user->secret);
+
+        $savedata = array(
+            "m_user_id" => $activeuser->m_user_id,
+            "m_user_lastname" => $activeuser->m_user_lastname,
+            "m_user_firstname" => $activeuser->m_user_firstname,
+            "m_user_sex" => $activeuser->m_user_sex,
+            "m_user_birthday" => $activeuser->m_user_birthday,
+            "m_user_school" => $activeuser->m_user_school,
+            "m_user_company" => $activeuser->m_user_company,
+            "m_user_department" => $activeuser->m_user_department,
+            "m_user_hash" => $activeuser->m_user_hash,
+            "m_user_registereddate" => $activeuser->m_user_registereddate,
+            "m_user_mail" => $activeuser->m_user_mail,
+        );
+
+        $this->m_user_lastname = $activeuser->m_user_lastname;
+        $this->m_user_firstname = $activeuser->m_user_firstname;
+        $this->m_user_name = $activeuser->m_user_lastname.$activeuser->m_user_firstname;
+        $this->m_user_sex = $activeuser->m_user_sex;
+        $this->m_user_birthday = $activeuser->m_user_birthday;
+        $this->m_user_school = $activeuser->m_user_school;
+        $this->m_user_company = $activeuser->m_user_company;
+        $this->m_user_department = $activeuser->m_user_department;
+        $this->m_user_hash = $activeuser->m_user_hash;
+        $this->m_user_registereddate = $activeuser->m_user_registereddate;
+        $this->m_user_mail = $activeuser->m_user_mail;
+        $this->pass = $activeuser->pass;
+
+
+        if($this->validation()===false)return false;
+        
+        $user = new MUser();
+        return $user->save($savedata);
+        
     }
 }
