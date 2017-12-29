@@ -7,6 +7,7 @@
 <a href="">ノート作成</a><br/>
 <a href="">ノート編集</a><br/>
 <a href="">ノート削除</a><br/>
+<a href="/manu/logout">ログアウト</a><br/>
 <hr/>
 <a href="/note/detail/1">ノートA</a><br/>
 <a href="/note/detail/2">ノートB</a><br/>

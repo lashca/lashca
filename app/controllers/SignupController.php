@@ -168,7 +168,7 @@ class SignupController extends ControllerBase
         if(!$this->session->has("m_forgotuser_mail") or !MForgotuser::mailExists($this->session->get("m_forgotuser_mail"))) {
             $this->response->redirect("/signup/forgot");
         }
-        if($this->session->get('sendFlag')){
+        if($this->session->get('sendFlag') and VActiveuser::findId($this->session->get("m_forgotuser_mail"))->m_user_id>0){
             $title = "【Lashca】パスワードの再発行";
             $body = "お世話になっております。"."\n";
             $body .= "Lashcaサポートセンターでございます。"."\n\n";
