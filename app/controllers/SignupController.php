@@ -114,7 +114,7 @@ class SignupController extends ControllerBase
 
         $request = new Request();
         if ($request->isPost() == true) {
-            $avtiveuser = VActiveuser::findEmail($this->data["m_user_mail"],$this->data['pass']);
+            $avtiveuser = VActiveuser::findEmailPass($this->data["m_user_mail"],$this->data['pass']);
             if ($avtiveuser->m_user_id > 0) {
                 $this->session->start();
                 $this->session->set("m_user_id", $avtiveuser->m_user_id);
@@ -168,7 +168,7 @@ class SignupController extends ControllerBase
         if(!$this->session->has("m_forgotuser_mail") or !MForgotuser::mailExists($this->session->get("m_forgotuser_mail"))) {
             $this->response->redirect("/signup/forgot");
         }
-        if($this->session->get('sendFlag') and VActiveuser::findId($this->session->get("m_forgotuser_mail"))->m_user_id>0){
+        if($this->session->get('sendFlag') and VActiveuser::findEmail($this->session->get("m_forgotuser_mail"))->m_user_id>0){
             $title = "【Lashca】パスワードの再発行";
             $body = "お世話になっております。"."\n";
             $body .= "Lashcaサポートセンターでございます。"."\n\n";
@@ -219,7 +219,7 @@ class SignupController extends ControllerBase
     public function resetcompleteAction(){
         $this->view->title .= "パスワード再登録完了";
         if ($this->session->has("m_user_mail")) {
-            $activeuser = VActiveuser::findId($this->session->get("m_user_mail"));+
+            $activeuser = VActiveuser::findEmail($this->session->get("m_user_mail"));+
             $this->session->set("m_user_id", $avtiveuser->m_user_id);
             
         }else{

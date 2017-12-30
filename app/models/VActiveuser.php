@@ -1,11 +1,11 @@
 <?php
 
+use Phalcon\Db\Column;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\PresenceOf;
 use Phalcon\Validation\Validator\StringLength;
 use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\Uniqueness;
-
 use Phalcon\Mvc\Model\Transaction\Manager as TxManager;
 
 class VActiveuser extends ModelBase
@@ -208,25 +208,30 @@ class VActiveuser extends ModelBase
         return parent::findFirst($parameters);
     }
 
-    public static function findId($m_user_mail)
+    public static function findId($m_user_id)
     {
         $user = new VActiveuser();
-        $m_user_hash = hash_hmac("sha256",$pass,$user->secret);
+        $conditions = "m_user_id = :m_user_id:";
+        $parameters = array("m_user_id" => $m_user_id);
+        $types = array("m_user_id" => Column::BIND_PARAM_INT);
+        return VActiveuser::findFirst(array($conditions,"bind" => $parameters,"bindTypes" => $types));
+    }
+
+    public static function findEmail($m_user_mail)
+    {
+        $user = new VActiveuser();
         $conditions = "m_user_mail = :m_user_mail:";
         $parameters = array("m_user_mail" => $m_user_mail);
         return VActiveuser::findFirst(array($conditions,"bind" => $parameters));
     }
 
-    public static function findEmail($m_user_mail,$pass)
+    public static function findEmailPass($m_user_mail,$pass)
     {
         $user = new VActiveuser();
         $m_user_hash = hash_hmac("sha256",$pass,$user->secret);
         $conditions = "m_user_mail = :m_user_mail: AND m_user_hash = :m_user_hash:";
         $parameters = array("m_user_mail" => $m_user_mail,"m_user_hash" => $m_user_hash);
-        return VActiveuser::findFirst(array(
-            $conditions,
-            "bind" => $parameters
-        ));
+        return VActiveuser::findFirst(array($conditions,"bind" => $parameters));
     }
 
     public function save($data=null, $whiteList=null)
@@ -277,7 +282,7 @@ class VActiveuser extends ModelBase
     public function updatePass(){
         $conditions = "m_user_mail = :m_user_mail:";
         $parameters = array("m_user_mail" => $this->m_user_mail);
-        $activeuser =  VActiveuser::findFirst(array($conditions,"bind" => $parameters));
+        $activeuser = VActiveuser::findFirst(array($conditions,"bind" => $parameters));
         $activeuser->pass = $this->pass;
         $activeuser->m_user_hash = hash_hmac("sha256",$this->pass,$user->secret);
 

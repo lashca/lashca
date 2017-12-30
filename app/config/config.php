@@ -9,10 +9,10 @@ defined('APP_PATH') || define('APP_PATH', BASE_PATH . '/app');
 return new \Phalcon\Config([
     'database' => [
         'adapter'     => 'Mysql',
-        'host'        => 'db1.lashca.com',
-        'username'    => 'muwnw_lashca',
-        'password'    => 'Lashca-apps.developer#20170819',
-        'dbname'      => 'muwnw_lashca',
+        'host'        => 'localhost',
+        'username'    => 'lashca-app',
+        'password'    => 'lashca-apps.developer#20170819',
+        'dbname'      => 'lashca',
         'charset'     => 'utf8',
     ],
     'application' => [
