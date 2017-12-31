@@ -8,7 +8,7 @@ class MenuController extends ControllerBase
     public function beforeExecuteRoute()
     {
         parent::beforeExecuteRoute();
-        if(!$this->session->has("m_user_id") and VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0){
+        if(!$this->session->has("m_user_id") or !VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0){
             $this->session->start();
             $this->session->set("url", $_SERVER["REQUEST_URI"]);
             $this->response->redirect("/signup/login");
@@ -20,6 +20,7 @@ class MenuController extends ControllerBase
         $this->view->title .= "メニュー";
 
         $holdingnotes = VHoldingnotes::findHoldingnotes($this->session->get("m_user_id"));
+        $this->view->setVar("holdingnotes", $holdingnotes);
     }
 
     public function userAction(){

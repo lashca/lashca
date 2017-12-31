@@ -14,6 +14,6 @@ E-mail:{{ email }}<br/>
     var y = {{ data["m_user_birthday_year"] }};
     var m = {{ data["m_user_birthday_month"] }};
     var d = {{ data["m_user_birthday_day"] }};    
-</script>  
+</script>
 <script src="/js/date.js"></script>
 </form>

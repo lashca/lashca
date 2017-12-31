@@ -7,7 +7,7 @@ class SignupController extends ControllerBase
     public function beforeExecuteRoute()
     {
         parent::beforeExecuteRoute();
-        if($this->session->has("m_user_id")) {
+        if($this->session->has("m_user_id") and VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0) {
             $this->response->redirect("/menu");
         }
     }

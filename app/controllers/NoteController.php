@@ -9,8 +9,7 @@ class NoteController extends ControllerBase
     {
         parent::beforeExecuteRoute();
         if(!$this->session->has("m_user_id") or !VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0){
-            $this->session->start();
-            $this->session->set("url", $_SERVER["REQUEST_URI"]);
+            $this->session->remove("url");
             $this->response->redirect("/signup/login");
         }
     }
@@ -34,5 +33,61 @@ class NoteController extends ControllerBase
                 $this->response->redirect("/menu");
             }
         }
+    }
+
+    public function detailAction($m_holdingnote_no)
+    {                  
+        $this->view->title .= "ノート";
+        $note = VNote::findHoldingNo($this->session->get("m_user_id"),$m_holdingnote_no);
+        if($note->pagecount == null)$note->pagecount=0;
+        if($note->masterylevel == null)$note->masterylevel=0;
+        if($note->learneddate == null)$note->learneddate="-";
+        $this->session->set("m_note_id", $note->m_note_id);
+        $this->view->setVar("note", $note);
+    }
+
+    public function editAction(){
+        $this->view->title .= "ノート編集";
+
+        $pages = VPage::findPages($this->session->get("m_user_id"),$this->session->get("m_note_id"));
+        $this->view->setVar("pages", $pages);
+    }
+
+    public function pageAction($m_page_no){
+        $this->view->title .= "ページ編集";
+        if($m_page_no > 0){
+            $this->session->set("m_page_no", $m_page_no);
+            $page = VPage::findPageNo($this->session->get("m_user_id"),$this->session->get("m_note_id"),$m_page_no);
+            $this->data['m_basic_word'] = $page[0]->m_basic_word;
+            $this->data['m_basic_description'] = $page[0]->m_basic_description;
+        }elseif($this->session->has("m_page_no")){
+            $this->session->remove("m_page_no");
+        }
+    
+        $request = new Request();
+        if ($request->isPost() == true) {
+            if($this->data['m_page_type'] == 1){
+                $basic = new VBasic();
+                if($this->session->has("m_page_no"))$basic->m_page_no = $this->session->get("m_page_no", $note->m_page_no);
+                else $basic->m_page_no = VBasic::findNextPageNo($this->session->get("m_note_id"));
+                $basic->m_note_id = $this->session->get("m_note_id");
+                $basic->m_user_id = $this->session->get("m_user_id");
+                $basic->m_page_type = 1;
+                $basic->m_basic_word = $this->data['m_basic_word'];
+                $basic->m_basic_description = $this->data['m_basic_description'];
+                $basic->m_basic_reverse_flag = $this->data['m_basic_reverse_flag'];
+                if ($basic->save() === false)
+                {
+                    $message = $this->getErrorMessages($basic);
+                    if(count($message)==0)$this->response->redirect("/help?c=000");
+                    $this->view->setVar("errormessage", $message);
+                }else{
+                    $this->response->redirect("/note/edit");
+                }
+            }elseif($this->data['m_page_type'] == 2){
+
+            }
+        }
+        $this->view->setVar("data", $this->data);
     }
 }

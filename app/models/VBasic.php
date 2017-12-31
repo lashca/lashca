@@ -8,15 +8,15 @@ use Phalcon\Validation\Validator\Regex;
 use Phalcon\Validation\Validator\Uniqueness;
 use Phalcon\Mvc\Model\Transaction\Manager as TxManager;
 
-class VHoldingnotes extends ModelBase
+class VBasic extends ModelBase
 {
 
     /**
      *
      * @var integer
-     * @Column(type="integer", length=20, nullable=true)
+     * @Column(type="integer", length=20, nullable=false)
      */
-    public $m_notecategory_id;
+    public $m_page_id;
 
     /**
      *
@@ -25,11 +25,6 @@ class VHoldingnotes extends ModelBase
      */
     public $m_note_id;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=20, nullable=false)
-     */
     public $m_user_id;
 
     /**
@@ -37,56 +32,42 @@ class VHoldingnotes extends ModelBase
      * @var integer
      * @Column(type="integer", length=20, nullable=false)
      */
-    public $m_holdingnote_no;
-
-    /**
-     *
-     * @var string
-     * @Column(type="string", nullable=false)
-     */
-    public $m_holdingnote_starttime;
-
-    /**
-     *
-     * @var string
-     * @Column(type="string", nullable=false)
-     */
-    public $m_holdingnote_endtime;
-
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=30, nullable=true)
-     */
-    public $m_note_name;
+    public $m_page_no;
 
     /**
      *
      * @var integer
-     * @Column(type="integer", length=1, nullable=true)
+     * @Column(type="integer", length=11, nullable=false)
      */
-    public $m_note_profit;
+    public $m_page_type;
+
+    /**
+     *
+     * @var string
+     * @Column(type="string", length=767, nullable=true)
+     */
+    public $m_page_urlword;
+
+    /**
+     *
+     * @var string
+     * @Column(type="string", nullable=true)
+     */
+    public $m_basic_word;
+
+    /**
+     *
+     * @var string
+     * @Column(type="string", nullable=true)
+     */
+    public $m_basic_description;
 
     /**
      *
      * @var integer
      * @Column(type="integer", length=11, nullable=true)
      */
-    public $m_note_price;
-
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=10, nullable=true)
-     */
-    public $m_note_no;
-
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=45, nullable=true)
-     */
-    public $m_notecategory_name;
+    public $m_basic_reverse_flag;
 
     public function validation()
     {
@@ -94,9 +75,13 @@ class VHoldingnotes extends ModelBase
 
         $validator->add(
             [
-                'm_note_name',
+                'm_note_id',
                 'm_user_id',
-                'm_holdingnote_no',
+                'm_page_no',
+                'm_page_type',
+                'm_basic_word',
+                'm_basic_description',
+                'm_basic_reverse_flag',
             ],
             new PresenceOf([
                 'message' => $this->PresenceOfMes,
@@ -104,14 +89,35 @@ class VHoldingnotes extends ModelBase
         );
 
         $validator->add(
-            'm_note_name',
+            [
+                'm_basic_word',
+                'm_basic_description',
+            ],
             new StringLength([
-                "max"            => 10,
+                "max"            => 300,
                 "min"            => 0,
-                "messageMaximum" => "10".$this->messageMaximumMes,
+                "messageMaximum" => "300".$this->messageMaximumMes,
                 "messageMinimum" => "0".$this->messageMinimumMes,
             ])
         );
+
+        $validator->add(
+            'm_page_type',
+            new Regex([
+                "pattern" => "/^[1]$/",
+                "message" => $this->PresenceOfMes,
+            ])
+        );
+
+        $validator->add(
+            'm_basic_reverse_flag',
+            new Regex([
+                "pattern" => "/^[01]$/",
+                "message" => $this->PresenceOfMes,
+            ])
+        );
+
+        return $this->validate($validator);
     }
 
     /**
@@ -120,7 +126,7 @@ class VHoldingnotes extends ModelBase
     public function initialize()
     {
         $this->setSchema("lashca");
-        $this->setSource("v_holdingnotes");
+        $this->setSource("v_basic");
     }
 
     /**
@@ -130,14 +136,14 @@ class VHoldingnotes extends ModelBase
      */
     public function getSource()
     {
-        return 'v_holdingnotes';
+        return 'v_basic';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return VHoldingnotes[]|VHoldingnotes|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return VBasic[]|VBasic|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -148,53 +154,51 @@ class VHoldingnotes extends ModelBase
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return VHoldingnotes|\Phalcon\Mvc\Model\ResultInterface
+     * @return VBasic|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
     }
 
-    public static function findNextHoldingNo($m_user_id)
+    public static function findNextPageNo($m_note_id)
     {
-        $m_holdingnote_no = parent::maximum(array("column" => "m_holdingnote_no","conditions" => "m_user_id = ".$m_user_id));
-        if($m_holdingnote_no > 0)return $m_holdingnote_no+1;
+        $m_page_no = parent::maximum(array("column" => "m_page_no","conditions" => "m_note_id = ".$m_note_id));
+        if($m_page_no > 0)return $m_page_no+1;
         else return 1;
-    }
-
-    public static function findHoldingnotes($m_user_id)
-    {
-        return $m_holdingnote_no = parent::find(array("conditions" => "m_user_id = ".$m_user_id));
     }
 
     public function save($data=null, $whiteList=null)
     {
         $txManager = new TxManager();
         $transaction = $txManager->get();
-        $holdingnotes = new MHoldingnotes();
-        $note = new MNote();
+        $page = new MPage();
+        $basic = new MBasic();
+        $learned = new MLearned();
 
-        $holdingnotes->setTransaction($transaction);
-        $note->setTransaction($transaction);
-
-        $this->m_holdingnote_no = VHoldingnotes::findNextHoldingNo($this->m_user_id);
+        $page->setTransaction($transaction);
+        $basic->setTransaction($transaction);
         
         $savedata = array(
+            "m_page_id" => $this->m_page_id,
             "m_note_id" => $this->m_note_id,
             "m_user_id" => $this->m_user_id,
-            "m_note_name" => $this->m_note_name,
-            "m_holdingnote_no" => $this->m_holdingnote_no,
+            "m_page_no" => $this->m_page_no,
+            "m_page_type" => $this->m_page_type,
+            "m_basic_word" => $this->m_basic_word,
+            "m_basic_description" => $this->m_basic_description,
+            "m_basic_reverse_flag" => $this->m_basic_reverse_flag,
+            "m_page_urlword" => $this->m_page_urlword,
         );
 
         if($this->validation()===false){
-            $transaction->rollback();
             return false;
         }
-        $note->save($savedata);
-        if($note->m_note_id > 0){
-            $this->m_note_id = $note->m_note_id;
-            $savedata["m_note_id"] = $note->m_note_id;
-            if($holdingnotes->save($savedata)===false){
+        $page->save($savedata);
+        if($page->m_page_id > 0){
+            $this->m_page_id = $page->m_page_id;
+            $savedata["m_page_id"] = $page->m_page_id;
+            if(!$basic->save($savedata) or !$learned->save($savedata)){
                 return false;
             }
             $transaction->commit();

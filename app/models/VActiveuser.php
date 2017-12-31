@@ -115,7 +115,7 @@ class VActiveuser extends ModelBase
             new StringLength([
                 "max"            => 200,
                 "min"            => 0,
-                "messageMaximum" => "300".$this->messageMaximumMes,
+                "messageMaximum" => "200".$this->messageMaximumMes,
                 "messageMinimum" => "0".$this->messageMinimumMes,
             ])
         );
@@ -262,7 +262,6 @@ class VActiveuser extends ModelBase
         );
 
         if($this->validation()===false){
-            $transaction->rollback();
             return false;
         }
         $user->save($savedata);

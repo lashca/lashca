@@ -1,50 +1,63 @@
 <?php
 
-class MNote extends ModelBase
+class VChoosable extends ModelBase
 {
 
     /**
      *
      * @var integer
-     * @Primary
+     * @Column(type="integer", length=20, nullable=false)
+     */
+    public $m_page_id;
+
+    /**
+     *
+     * @var integer
      * @Column(type="integer", length=20, nullable=false)
      */
     public $m_note_id;
 
     /**
      *
-     * @var string
-     * @Column(type="string", length=30, nullable=false)
-     */
-    public $m_note_name;
-
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $m_note_profit;
-
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=11, nullable=false)
-     */
-    public $m_note_price;
-
-    /**
-     *
      * @var integer
      * @Column(type="integer", length=20, nullable=false)
      */
-    public $m_notecategory_id;
+    public $m_page_no;
 
     /**
      *
      * @var integer
      * @Column(type="integer", length=11, nullable=false)
      */
-    public $m_note_no;
+    public $m_page_type;
+
+    /**
+     *
+     * @var string
+     * @Column(type="string", length=767, nullable=true)
+     */
+    public $m_page_urlword;
+
+    /**
+     *
+     * @var string
+     * @Column(type="string", nullable=true)
+     */
+    public $m_choosable_sentence;
+
+    /**
+     *
+     * @var integer
+     * @Column(type="integer", length=11, nullable=true)
+     */
+    public $m_choosable_answer;
+
+    /**
+     *
+     * @var integer
+     * @Column(type="integer", length=11, nullable=true)
+     */
+    public $m_choosable_selection_count;
 
     /**
      * Initialize method for model.
@@ -52,11 +65,7 @@ class MNote extends ModelBase
     public function initialize()
     {
         $this->setSchema("lashca");
-        $this->setSource("m_note");
-        $this->hasMany('m_note_id', 'MHoldingnotes', 'm_note_id', ['alias' => 'MHoldingnotes']);
-        $this->hasMany('m_note_id', 'MHoldingtags', 'm_note_id', ['alias' => 'MHoldingtags']);
-        $this->hasMany('m_note_id', 'MPage', 'm_note_id', ['alias' => 'MPage']);
-        $this->belongsTo('m_notecategory_id', '\MNotecategory', 'm_notecategory_id', ['alias' => 'MNotecategory']);
+        $this->setSource("v_choosable");
     }
 
     /**
@@ -66,14 +75,14 @@ class MNote extends ModelBase
      */
     public function getSource()
     {
-        return 'm_note';
+        return 'v_choosable';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return MNote[]|MNote|\Phalcon\Mvc\Model\ResultSetInterface
+     * @return VChoosable[]|VChoosable|\Phalcon\Mvc\Model\ResultSetInterface
      */
     public static function find($parameters = null)
     {
@@ -84,7 +93,7 @@ class MNote extends ModelBase
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return MNote|\Phalcon\Mvc\Model\ResultInterface
+     * @return VChoosable|\Phalcon\Mvc\Model\ResultInterface
      */
     public static function findFirst($parameters = null)
     {
