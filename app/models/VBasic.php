@@ -161,6 +161,16 @@ class VBasic extends ModelBase
         return parent::findFirst($parameters);
     }
 
+    public static function findNoteNo($m_note_id,$m_page_no)
+    {
+        $conditions = "m_note_id = :m_note_id: and m_page_no = :m_page_no:";
+        $parameters = array("m_note_id" => $m_note_id,"m_page_no" => $m_page_no);
+        $types = array("m_user_id" => Column::BIND_PARAM_INT,"m_page_no" => Column::BIND_PARAM_INT);
+        return VActiveuser::findFirst(array($conditions,"bind" => $parameters,"bindTypes" => $types))->m_page_id;
+    
+        return parent::findFirst(array("conditions" => "m_note_id = ".$m_note_id." and m_page_no = ".$m_page_no))->m_page_id;
+    }
+
     public static function findNextPageNo($m_note_id)
     {
         $m_page_no = parent::maximum(array("column" => "m_page_no","conditions" => "m_note_id = ".$m_note_id));
@@ -178,6 +188,7 @@ class VBasic extends ModelBase
 
         $page->setTransaction($transaction);
         $basic->setTransaction($transaction);
+        $learned->setTransaction($transaction);
         
         $savedata = array(
             "m_page_id" => $this->m_page_id,

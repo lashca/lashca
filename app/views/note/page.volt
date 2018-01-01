@@ -18,6 +18,7 @@
 <form action="/note/page" method="post">
     問題文：<input type="text" name="m_basic_word" size="30" maxlength="500" id="m_basic_word1" value="{{ data["m_basic_word"] }}"/>{{ errormessage["m_basic_word"] }}<br/>
     回答：<input type="text" name="m_basic_description" size="30" maxlength="500" id="m_basic_description1" value="{{ data["m_basic_description"] }}"/>{{ errormessage["m_basic_description"] }}<br/>
+    <input type="hidden" name="startpos" value="0"/>
     <input type="hidden" name="m_page_type" value="1"/>
     <input type="hidden" name="m_basic_reverse_flag" value="0"/>
     <button type="submit">登録</button>
@@ -27,6 +28,7 @@
 <form action="/note/page" method="post">
     単語：<input type="text" name="m_basic_word" size="30" maxlength="500" id="m_basic_word2" value="{{ data["m_basic_word"] }}"/>{{ errormessage["m_basic_word"] }}<br/>
     説明文：<input type="text" name="m_basic_description" size="30" maxlength="500" id="m_basic_description2" value="{{ data["m_basic_description"] }}"/>{{ errormessage["m_basic_description"] }}<br/>
+    <input type="hidden" name="startpos" value="1"/>
     <input type="hidden" name="m_page_type" value="1"/>
     <input type="hidden" name="m_basic_reverse_flag" value="1"/>
     <button type="submit">登録</button>
@@ -36,20 +38,39 @@
 <form action="/note/page" method="post">
     問題文：<input type="text" name="m_choosable_sentence" size="30" maxlength="500" id="m_choosable_sentence" value="{{ data["m_choosable_sentence"] }}"/>{{ errormessage["m_choosable_sentence"] }}<br/>
     選択肢数：
-    <select name="selection_num" id="selection_num">
-    </select>{{ errormessage["selection_num"] }}<br/>
-    正解：選択肢：<div id="selection"></div>
+    <select name="m_choosable_selection_count" id="m_choosable_selection_count">
+    </select>{{ errormessage["m_choosable_selection_count"] }}<br/>
+    正解：{{ errormessage["m_choosable_answer"] }}
+    選択肢：{{ errormessage["m_selection_text"] }}<div id="selection"></div>
+    <input type="hidden" name="startpos" value="2"/>
     <input type="hidden" name="m_page_type" value="2"/>
     <button type="submit">登録</button>
 </form>
 </li>
 </ul>
+
+<script>
+    var startpos = {{ data["startpos"] }};
+    var selection_max = 8;
+    var m_choosable_selection_count =  {{ data["m_choosable_selection_count"] }};
+    var answer = {{ data["m_choosable_answer"] }};
+    var m_selection_text = [];
+    m_selection_text.push("{{ data["m_selection_text1"] }}");
+    m_selection_text.push("{{ data["m_selection_text2"] }}");
+    m_selection_text.push("{{ data["m_selection_text3"] }}");
+    m_selection_text.push("{{ data["m_selection_text4"] }}");
+    m_selection_text.push("{{ data["m_selection_text5"] }}");
+    m_selection_text.push("{{ data["m_selection_text6"] }}");
+    m_selection_text.push("{{ data["m_selection_text7"] }}");
+    m_selection_text.push("{{ data["m_selection_text8"] }}");
+</script>
+
 <script>
 $(function () {
   /*初期表示*/
   $('.ChangeElem_Panel').hide();
-  $('.ChangeElem_Panel').eq(0).show();
-  $('.ChangeElem_Btn').eq(0).addClass('is-active');
+  $('.ChangeElem_Panel').eq(startpos).show();
+  $('.ChangeElem_Btn').eq(startpos).addClass('is-active');
   /*クリックイベント*/
   $('.ChangeElem_Btn').each(function () {
     $(this).on('click', function () {
@@ -62,32 +83,28 @@ $(function () {
   });
 });
 </script>
-<script>
-    var selection_num = 4;
-    var answer = 1;
-</script>
+
 <script>
 $(function () {
-    var selection_max = 8;
-    for (var i = 1; i <= selection_max; i++) {
-        if (selection_num == i) {
-            $('#selection_num').append('<option value="'+i+'" selected>'+i+'</option>');
+    for (var i = 2; i <= selection_max; i++) {
+        if (m_choosable_selection_count == i) {
+            $('#m_choosable_selection_count').append('<option value="'+i+'" selected>'+i+'</option>');
         }else{
-            $('#selection_num').append('<option value="'+i+'">'+i+'</option>');
+            $('#m_choosable_selection_count').append('<option value="'+i+'">'+i+'</option>');
         }
     }
 
-    var last = $('#selection_num').val();
+    var last = $('#m_choosable_selection_count').val();
     for (var i = 1; i <= selection_max; i++) {
         if (answer == i) {
-            $('#selection').append('<div id="subselection'+i+'"><input type="radio" name="m_choosable_answer" id="m_choosable_answer" value="'+i+'" checked/><input type="text" name="m_selection_text'+i+'" size="30" maxlength="500" id="m_selection_text'+i+'" value="{{ data["m_selection_text'+i+'"] }}"/>{{ errormessage["m_selection_text'+i+'"] }}</div>');
+            $('#selection').append('<div id="subselection'+i+'"><input type="radio" name="m_choosable_answer" id="m_choosable_answer" value="'+i+'" checked/><input type="text" name="m_selection_text'+i+'" size="30" maxlength="500" id="m_selection_text'+i+'" value="'+m_selection_text[i-1]+'"/></div>');
         }else{
-            $('#selection').append('<div id="subselection'+i+'"><input type="radio" name="m_choosable_answer" id="m_choosable_answer" value="'+i+'"/><input type="text" name="m_selection_text'+i+'" size="30" maxlength="500" id="m_selection_text'+i+'" value="{{ data["m_selection_text'+i+'"] }}"/>{{ errormessage["m_selection_text'+i+'"] }}</div>');
+            $('#selection').append('<div id="subselection'+i+'"><input type="radio" name="m_choosable_answer" id="m_choosable_answer" value="'+i+'"/><input type="text" name="m_selection_text'+i+'" size="30" maxlength="500" id="m_selection_text'+i+'" value="'+m_selection_text[i-1]+'"/></div>');
         }
     }
 
     function showSelection(){
-        var last = $('#selection_num').val();
+        var last = $('#m_choosable_selection_count').val();
         for (var i = 1; i <= selection_max; i++) {
             if (i <= last) {
                 $('#subselection'+i+'').eq(0).show();
@@ -97,7 +114,7 @@ $(function () {
         }
     }
     showSelection();
-    $('#selection_num').change(showSelection);
+    $('#m_choosable_selection_count').change(showSelection);
 });
 </script>
 <script>

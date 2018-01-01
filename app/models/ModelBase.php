@@ -10,6 +10,7 @@ class ModelBase extends Model
     public $EmailValidatorMes = "入力ミス";
     public $UniquenessMes = "登録済み";
     public $DateExistsMes = "未入力";
+    public $BetweenMes = "入力ミス";
     public $ActiveuserExistsMes = "登録済みメールアドレス";
     public $SemiuserExistsMes = "仮登録済みメールアドレス";
 
