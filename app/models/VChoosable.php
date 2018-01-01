@@ -171,7 +171,7 @@ class VChoosable extends ModelBase
         return parent::findFirst($parameters);
     }
 
-    public function save($data=null, $whiteList=null)
+    public function upsert($update)
     {
         $txManager = new TxManager();
         $transaction = $txManager->get();
@@ -203,9 +203,8 @@ class VChoosable extends ModelBase
         if($page->m_page_id > 0){
             $this->m_page_id = $page->m_page_id;
             $savedata["m_page_id"] = $page->m_page_id;
-            if(!$choosable->save($savedata) or !$learned->save($savedata)){
-                return false;
-            }
+            if(!$choosable->save($savedata))return false;
+            if(!$update and !$learned->save($savedata))return false;
             
             for($i=1;$i<=$this->m_choosable_selection_count;$i++){
                 $selection = new MSelection();

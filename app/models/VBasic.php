@@ -166,7 +166,7 @@ class VBasic extends ModelBase
         $conditions = "m_note_id = :m_note_id: and m_page_no = :m_page_no:";
         $parameters = array("m_note_id" => $m_note_id,"m_page_no" => $m_page_no);
         $types = array("m_user_id" => Column::BIND_PARAM_INT,"m_page_no" => Column::BIND_PARAM_INT);
-        return VActiveuser::findFirst(array($conditions,"bind" => $parameters,"bindTypes" => $types))->m_page_id;
+        return VBasic::findFirst(array($conditions,"bind" => $parameters,"bindTypes" => $types))->m_page_id;
     
         return parent::findFirst(array("conditions" => "m_note_id = ".$m_note_id." and m_page_no = ".$m_page_no))->m_page_id;
     }
@@ -178,7 +178,7 @@ class VBasic extends ModelBase
         else return 1;
     }
 
-    public function save($data=null, $whiteList=null)
+    public function upsert($update)
     {
         $txManager = new TxManager();
         $transaction = $txManager->get();
@@ -209,9 +209,8 @@ class VBasic extends ModelBase
         if($page->m_page_id > 0){
             $this->m_page_id = $page->m_page_id;
             $savedata["m_page_id"] = $page->m_page_id;
-            if(!$basic->save($savedata) or !$learned->save($savedata)){
-                return false;
-            }
+            if(!$basic->save($savedata))return false;
+            if(!$update and !$learned->save($savedata))return false;
             $transaction->commit();
             return true;
         }else{

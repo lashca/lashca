@@ -1,4 +1,4 @@
-<h1>{{note.m_note_name}}</h1>
+<h1>{{m_note_name}}</h1>
 <hr/>
 <style>
 .ChangeElem_Panel{
@@ -17,7 +17,7 @@
 <li class="ChangeElem_Panel">
 <form action="/note/page" method="post">
     問題文：<input type="text" name="m_basic_word" size="30" maxlength="500" id="m_basic_word1" value="{{ data["m_basic_word"] }}"/>{{ errormessage["m_basic_word"] }}<br/>
-    回答：<input type="text" name="m_basic_description" size="30" maxlength="500" id="m_basic_description1" value="{{ data["m_basic_description"] }}"/>{{ errormessage["m_basic_description"] }}<br/>
+    解答：<input type="text" name="m_basic_description" size="30" maxlength="500" id="m_basic_description1" value="{{ data["m_basic_description"] }}"/>{{ errormessage["m_basic_description"] }}<br/>
     <input type="hidden" name="startpos" value="0"/>
     <input type="hidden" name="m_page_type" value="1"/>
     <input type="hidden" name="m_basic_reverse_flag" value="0"/>
