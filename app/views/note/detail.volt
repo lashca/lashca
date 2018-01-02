@@ -1,5 +1,6 @@
 <h1>{{note.m_note_name}}</h1>
 <hr/>
+{{ dump(records)}}
 問題数：{{note.pagecount}}<br/>
 習得レベル：{{note.masterylevel}}<br/>
 最終学習日：{{note.learneddate}}<br/>

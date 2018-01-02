@@ -168,6 +168,14 @@ class VPage extends ModelBase
         return parent::find(array("conditions" => "m_user_id = ".$m_user_id." and m_note_id = ".$m_note_id));
     }
 
+    public static function findGroupPages($m_user_id,$m_note_id)
+    {
+        return parent::find(array(
+            "conditions" => "m_user_id = ".$m_user_id." and m_note_id = ".$m_note_id,
+            "group" => "m_page_id",
+        ));
+    }
+
     public static function findPageNo($m_user_id,$m_note_id,$m_page_no)
     {
         return parent::find(array("conditions" => "m_user_id = ".$m_user_id." and m_note_id = ".$m_note_id." and m_page_no = ".$m_page_no));

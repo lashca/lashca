@@ -41,9 +41,35 @@ class NoteController extends ControllerBase
         $note = VNote::findHoldingNo($this->session->get("m_user_id"),$m_holdingnote_no);
         if($note->pagecount == null)$note->pagecount=0;
         if($note->masterylevel == null)$note->masterylevel=0;
-        if($note->learneddate == null)$note->learneddate="-";
+        if($note->learneddate == null or $note->learneddate == '0000-01-01 00:00:00')$note->learneddate="-";
         $this->session->set("m_note_id", $note->m_note_id);
         $this->session->set("m_note_name", $note->m_note_name);
+
+        $pages = VPage::findGroupPages($this->session->get("m_user_id"),$this->session->get("m_note_id"));
+        
+        $filename = "Learned_".$this->session->get("m_user_id")."_".$note->m_note_id."_".date( "Y-m-d-His" , time()).".csv";
+        $f = fopen($this->learnedinput_dir.$filename, "w");
+        if ( $f ) {
+            foreach($pages as $page){
+                $line = array($page->m_page_id,$page->m_learned_datetime,$page->m_learned_correctedcount,$page->m_learned_masterylevel);
+                fputcsv($f, $line);
+            }
+        }
+        fclose($f);
+
+        chdir($this->working_dir);
+        system('mono '.$this->masteryExe." ".$filename);
+
+        $f = fopen($this->learnedoutput_dir.$filename, "r");
+        if ( $f ) {
+            while (($line = fgetcsv($f)) !== FALSE) {
+                $records[] = $line;
+            }
+        }
+        fclose($fp);
+        unlink($this->learnedoutput_dir.$filename);
+
+        $this->view->setVar("records", $records);
         $this->view->setVar("note", $note);
     }
 
