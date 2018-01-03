@@ -1,0 +1,10 @@
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\bin\Release\netcoreapp2.0\MasteryLevelCalculator.deps.json
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\bin\Release\netcoreapp2.0\MasteryLevelCalculator.runtimeconfig.json
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\bin\Release\netcoreapp2.0\MasteryLevelCalculator.runtimeconfig.dev.json
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\bin\Release\netcoreapp2.0\MasteryLevelCalculator.dll
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\bin\Release\netcoreapp2.0\MasteryLevelCalculator.pdb
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\obj\Release\netcoreapp2.0\MasteryLevelCalculator.csproj.CoreCompileInputs.cache
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\obj\Release\netcoreapp2.0\MasteryLevelCalculator.AssemblyInfoInputs.cache
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\obj\Release\netcoreapp2.0\MasteryLevelCalculator.AssemblyInfo.cs
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\obj\Release\netcoreapp2.0\MasteryLevelCalculator.dll
+C:\Users\matuk\OneDrive\Apps\Web\lashca\C#\MasteryLevelCalculator\MasteryLevelCalculator\obj\Release\netcoreapp2.0\MasteryLevelCalculator.pdb
