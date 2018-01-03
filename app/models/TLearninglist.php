@@ -111,4 +111,13 @@ class TLearninglist extends ModelBase
         return parent::findFirst($parameters);
     }
 
+    public static function findUser($m_user_id){
+        return TLearninglist::find("m_user_id = ".$m_user_id);
+    }
+
+    public static function deleteUserId($m_user_id){
+        $learninglist = TLearninglist::find("m_user_id = ".$m_user_id);
+        $learninglist->delete();
+    }
+
 }

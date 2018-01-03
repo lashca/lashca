@@ -88,9 +88,13 @@ namespace MasteryLevelCalculator
             return learnedList;
         }
 
-        private static List<List<string>> writeLearnedCSV(List<LearningList> learningLists)
+        private static List<List<string>> writeLearnedCSV(double averageMastery, List<LearningList> learningLists)
         {
             var CSVstring = new List<List<string>>();
+
+            var averageLine = new List<string>();
+            averageLine.Add(averageMastery.ToString());
+            CSVstring.Add(averageLine);
 
             for (int i = 0; i < learningLists.Count; i++)
             {
@@ -120,7 +124,7 @@ namespace MasteryLevelCalculator
                 MasteryCore mc = new MasteryCore();
                 List<LearningList> learningLists = mc.createLearningList(learnedList);
 
-                writeCSV(fileName, writeLearnedCSV(learningLists));
+                writeCSV(fileName, writeLearnedCSV(mc.averageMastery,learningLists));
             }
             
         }

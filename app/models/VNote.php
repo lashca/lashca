@@ -55,13 +55,6 @@ class VNote extends ModelBase
 
     /**
      *
-     * @var double
-     * @Column(type="double", length=14, nullable=true)
-     */
-    public $masterylevel;
-
-    /**
-     *
      * @var string
      * @Column(type="string", nullable=true)
      */

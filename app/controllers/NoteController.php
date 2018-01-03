@@ -38,12 +38,28 @@ class NoteController extends ControllerBase
     public function detailAction($m_holdingnote_no)
     {                  
         $this->view->title .= "ノート";
+
+        $tlearninglists = TLearninglist::findUser($this->session->get("m_user_id"));
+        foreach($tlearninglists as $tlearninglist){
+            if($tlearninglist->t_learninglist_learned==1){
+                $learned = new MLearned();
+                $learned->m_page_id = $tlearninglist->m_page_id;
+                $learned->m_user_id = $tlearninglist->m_user_id;
+                $learned->m_learned_datetime = $tlearninglist->t_learninglist_next_learned_datetime;
+                $learned->m_learned_correctedcount = $tlearninglist->t_learninglist_next_correted_count;
+                $learned->m_learned_masterylevel = $tlearninglist->t_learninglist_next_masterylevel;
+                $learned->save();
+            }
+        }
+
         $note = VNote::findHoldingNo($this->session->get("m_user_id"),$m_holdingnote_no);
         if($note->pagecount == null)$note->pagecount=0;
-        if($note->masterylevel == null)$note->masterylevel=0;
         if($note->learneddate == null or $note->learneddate == '0000-01-01 00:00:00')$note->learneddate="-";
         $this->session->set("m_note_id", $note->m_note_id);
         $this->session->set("m_note_name", $note->m_note_name);
+        $this->session->set("m_holdingnote_no", $m_holdingnote_no);
+
+        
 
         $pages = VPage::findGroupPages($this->session->get("m_user_id"),$this->session->get("m_note_id"));
         
@@ -66,11 +82,29 @@ class NoteController extends ControllerBase
                 $records[] = $line;
             }
         }
-        fclose($fp);
+        fclose($f);
         unlink($this->learnedoutput_dir.$filename);
 
-        $this->view->setVar("records", $records);
+        TLearninglist::deleteUserId($this->session->get("m_user_id"));
+        $initline = true;
+        $pages = array();
+        foreach($records as $record){
+            if($initline){
+                $masterylevel = $record[0];
+                $initline = false;
+            }else{
+                $learninglist = new TLearninglist();
+                $learninglist->m_user_id = $this->session->get("m_user_id");
+                $learninglist->m_page_id = $record[0];
+                if($record[1]<1)array_push($pages, $record[0]);
+                $learninglist->t_learninglist_memorystrength = $record[1];
+                $learninglist->save();
+            }
+        }
+        $this->session->set("pages", $pages);
+        
         $this->view->setVar("note", $note);
+        $this->view->setVar("masterylevel", $masterylevel);
     }
 
     public function editAction(){
