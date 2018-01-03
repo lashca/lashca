@@ -51,7 +51,6 @@ class LearningController extends ControllerBase
             }
 
             $learninglist->save();
-            $this->view->setRenderLevel(View::LEVEL_NO_RENDER);
         }else{
             $prevlearninglist = VLearninglist::findPageNo($this->session->get("m_user_id"),1);
             $learninglist = VLearninglist::findUser($this->session->get("m_user_id"));
