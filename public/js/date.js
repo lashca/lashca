@@ -24,7 +24,6 @@
     }
   
     $(function(){
-      //1900年～2015年まで表示
       var hiduke=new Date();
       for (var i = hiduke.getFullYear(); i >= hiduke.getFullYear()-100; i--) {
         if (y == i) {
