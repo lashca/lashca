@@ -279,6 +279,11 @@ class VActiveuser extends ModelBase
     }
 
     public function updatePass(){
+        $txManager = new TxManager();
+        $transaction = $txManager->get();
+        $user = new MUser();
+        $user->setTransaction($transaction);
+
         $conditions = "m_user_mail = :m_user_mail:";
         $parameters = array("m_user_mail" => $this->m_user_mail);
         $activeuser = VActiveuser::findFirst(array($conditions,"bind" => $parameters));
@@ -299,6 +304,7 @@ class VActiveuser extends ModelBase
             "m_user_mail" => $activeuser->m_user_mail,
         );
 
+        $this->m_user_id = $activeuser->m_user_id;
         $this->m_user_lastname = $activeuser->m_user_lastname;
         $this->m_user_firstname = $activeuser->m_user_firstname;
         $this->m_user_name = $activeuser->m_user_lastname.$activeuser->m_user_firstname;
@@ -315,8 +321,12 @@ class VActiveuser extends ModelBase
 
         if($this->validation()===false)return false;
         
-        $user = new MUser();
-        return $user->save($savedata);
+        if($user->save($savedata)){
+            $transaction->commit();
+            return true;
+        }else{
+            return false;
+        }
         
     }
 }

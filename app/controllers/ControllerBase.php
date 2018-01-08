@@ -14,22 +14,22 @@ class ControllerBase extends Controller
 
     public function beforeExecuteRoute()
     {
-        $debug = new \Phalcon\Debug();
-        $debug->listen();
-
         $this->working_dir = dirname(__FILE__)."/../../C#/MasteryLevelCalculator/MasteryLevelCalculator/";
         $this->learnedinput_dir = dirname(__FILE__)."/../../C#/MasteryLevelCalculator/MasteryLevelCalculator/data/input/";
         $this->learnedoutput_dir = dirname(__FILE__)."/../../C#/MasteryLevelCalculator/MasteryLevelCalculator/data/output/";
         $this->masteryExe = dirname(__FILE__)."/../../C#/MasteryLevelCalculator/MasteryLevelCalculator/MasteryLevel.exe";
-    
         
-        $this->view->setTemplateAfter('common');
+        $this->view->setTemplateAfter('base');
         $this->assets->addCss('css/landio.css');
         $this->assets->addJs('js/landio.min.js');     
         $this->view->title = "Lashca ";
 
         $this->data =  $this->request->getPost();
         $this->data = $this->trimSpace($this->data);
+    }
+
+    public function afterExecuteRoute(){
+        $this->view->title .= $this->view->action_name;
     }
 
     public function getErrorMessages($modelInstance)

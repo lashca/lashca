@@ -1,5 +1,21 @@
-body {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+html, body {
+    height: 100%;
+    margin: 0;
+}
+.wrapper {
+    min-height: 100%;
+    margin-bottom: -57px;
+}
+.footer,
+.push {
+  height: 57px;
+}
+.buffer {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+.buffer-top {
+    margin-top: 2em;
 }
 .bg-gray{
     color: #ffffff;
@@ -18,4 +34,24 @@ body {
 }
 .start-btn{
     font-size: 1.5rem;
+}
+ul.privacy{
+    list-style-type: none;
+    padding-left:0;
+}
+li.privacy{
+    padding-bottom:0.5em;
+}
+ol.list_parentheses{
+    padding:0 0 0 2em;
+    margin:0;
+}
+ol.list_parentheses li{
+    list-style-type:none;
+    list-style-position:inside;
+    counter-increment: cnt;
+}
+ol.list_parentheses li:before{
+    display: marker;
+    content: "(" counter(cnt) ") ";
 }

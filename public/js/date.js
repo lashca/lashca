@@ -13,7 +13,7 @@
         var last = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)[m-1];
       }
   
-      $('#day').append('<option value="">--</option>');
+      $('#day').append('<option value="">日</option>');
       for (var i = 1; i <= last; i++) {
         if (d == i) { //日がすでに選択されている場合はその値が選択された状態で表示
           $('#day').append('<option value="' + i + '" selected>' + i + '</option>');

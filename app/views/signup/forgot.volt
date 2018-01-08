@@ -1,6 +1,17 @@
-<h1>パスワード再登録依頼</h1>
-<hr/>
-<form action="/signup/forgot" method="post">
-E-mail:<input type="text" name="m_forgotuser_mail" size="30" maxlength="500" id="m_forgotuser_mail" value="{{ data["m_forgotuser_mail"] }}"/>{{ errormessage["m_forgotuser_mail"] }}<br/>
-<button type="submit">再登録</button>
-</form>
+<div class="card w-75 mx-auto">
+    <div class="card-body">
+        <h5 class="card-title">パスワード再登録</h5>
+        <form action="/signup/forgot" method="post">
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control" id="inputEmail4" maxlength="254" placeholder="Email" name="m_forgotuser_mail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" value="{{ data["m_forgotuser_mail"] }}" required/>
+                    <font color="#ff0000"><b>{{ errormessage["m_forgotuser_mail"] }}</b></font><br/>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <button type="submit" class="btn btn-secondary bg-gray">再登録依頼</button>
+            </div>
+        </form>
+    </div>
+</div>

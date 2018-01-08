@@ -10,7 +10,8 @@ class NoteController extends ControllerBase
         parent::beforeExecuteRoute();
         if(!$this->session->has("m_user_id") or !VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0){
             $this->session->remove("url");
-            $this->response->redirect("/signup/login");
+            $this->dispatcher->forward(array('controller' => 'signup','action' => 'login'));
+            return;
         }
     }
 

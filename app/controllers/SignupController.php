@@ -7,14 +7,15 @@ class SignupController extends ControllerBase
     public function beforeExecuteRoute()
     {
         parent::beforeExecuteRoute();
+        $this->view->setTemplateAfter('base_signup');
         if($this->session->has("m_user_id") and VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0) {
-            $this->response->redirect("/menu");
+            $this->dispatcher->forward(array('controller' => 'menu','action' => ''));
         }
     }
 
     public function indexAction()
     {
-        $this->view->title .= "仮登録";
+        $this->view->action_name = "仮登録";
 
         $request = new Request();
         if ($request->isPost() == true) {
@@ -36,7 +37,7 @@ class SignupController extends ControllerBase
 
     public function completeAction()
     {
-        $this->view->title .= "仮登録完了";
+        $this->view->action_name = "仮登録完了";
 
         if(!$this->session->has("m_semiuser_mail") or !MSemiuser::mailExists($this->session->get("m_semiuser_mail"))) {
             $this->response->redirect("/signup");
@@ -59,7 +60,7 @@ class SignupController extends ControllerBase
 		$body .= "※当メールは自動送信専用となり、返信は受け付けておりません。"."\n\n";
 		$body .= "何卒よろしくお願いいたします。"."\n\n";
 		$body .= "―――――――――――――――――――――――――――――――"."\n";
-		$body .= "Copyright (C) ".date("Y",time())." Lashca.com all rights reserved.";
+		$body .= "Copyright (C) ".date("Y",time())." Lashca, all rights reserved.";
         mb_send_mail($this->session->get('m_semiuser_mail'), $title, $body, "From: ".$this->lashcamail);
 
         $this->session->destroy();
@@ -67,7 +68,7 @@ class SignupController extends ControllerBase
 
     public function registrationAction($passid)
     {
-        $this->view->title .= "本登録";
+        $this->view->action_name = "本登録";
 
         $request = new Request();
         $this->session->start();
@@ -102,15 +103,15 @@ class SignupController extends ControllerBase
                 $this->response->redirect("/help?c=001");
             }
         }
-        if($this->data['m_user_birthday_year']=="")$this->data['m_user_birthday_year']="'----'";
-        if($this->data['m_user_birthday_month']=="")$this->data['m_user_birthday_month']="'--'";
-        if($this->data['m_user_birthday_day']=="")$this->data['m_user_birthday_day']="'--'";
+        if($this->data['m_user_birthday_year']=="")$this->data['m_user_birthday_year']="'年'";
+        if($this->data['m_user_birthday_month']=="")$this->data['m_user_birthday_month']="'月'";
+        if($this->data['m_user_birthday_day']=="")$this->data['m_user_birthday_day']="'日'";
         $this->view->setVar("data", $this->data);
     }
 
     public function loginAction()
     {
-        $this->view->title .= "ログイン";
+        $this->view->action_name = "ログイン";
 
         $request = new Request();
         if ($request->isPost() == true) {
@@ -135,7 +136,7 @@ class SignupController extends ControllerBase
 
     public function forgotAction()
     {
-        $this->view->title .= "パスワード再登録依頼";
+        $this->view->action_name = "パスワード再登録依頼";
 
         $request = new Request();
         if ($request->isPost() == true) {
@@ -163,7 +164,7 @@ class SignupController extends ControllerBase
 
     public function forgotcompleteAction()
     {
-        $this->view->title .= "パスワード再登録受付完了";
+        $this->view->action_name = "パスワード再登録受付完了";
 
         if(!$this->session->has("m_forgotuser_mail") or !MForgotuser::mailExists($this->session->get("m_forgotuser_mail"))) {
             $this->response->redirect("/signup/forgot");
@@ -172,12 +173,12 @@ class SignupController extends ControllerBase
             $title = "【Lashca】パスワードの再発行";
             $body = "お世話になっております。"."\n";
             $body .= "Lashcaサポートセンターでございます。"."\n\n";
-            $body .= "パスワードの再発行しました。"."\n\n";
-            $body .= "URL: https://".$_SERVER['HTTP_HOST']."/signup/reset/".$this->session->get('pass').$this->session->get('m_forgotuser_id')."\n";
-            $body .= "ログイン後必ずパスワードの再設定を行ってください。"."\n\n";
+            $body .= "パスワード再登録依頼を受付ました。"."\n";
+            $body .= "以下のURLからパスワードの再登録を行ってください。"."\n\n";
+            $body .= "URL: https://".$_SERVER['HTTP_HOST']."/signup/reset/".$this->session->get('pass').$this->session->get('m_forgotuser_id')."\n\n";
             $body .= "何卒よろしくお願いいたします。"."\n\n";
             $body .= "―――――――――――――――――――――――――――――――"."\n";
-            $body .= "Copyright (C) ".date("Y",time())." Lashca.com all rights reserved.";
+            $body .= "Copyright (C) ".date("Y",time())." Lashca, all rights reserved.";
             mb_send_mail($this->session->get('m_forgotuser_mail'), $title, $body, "From: ".$this->lashcamail);
         }
         $this->session->destroy();
@@ -185,7 +186,7 @@ class SignupController extends ControllerBase
 
     public function resetAction($passid)
     {
-        $this->view->title .= "パスワード再登録";
+        $this->view->action_name = "パスワード再登録";
 
         $request = new Request();
         $this->session->start();
@@ -217,13 +218,21 @@ class SignupController extends ControllerBase
     }
 
     public function resetcompleteAction(){
-        $this->view->title .= "パスワード再登録完了";
+        $this->view->action_name = "パスワード再登録完了";
         if ($this->session->has("m_user_mail")) {
-            $activeuser = VActiveuser::findEmail($this->session->get("m_user_mail"));+
-            $this->session->set("m_user_id", $avtiveuser->m_user_id);
-            
+            $this->session->start();
+            $this->session->set("m_user_id", VActiveuser::findEmail($this->session->get("m_user_mail"))->m_user_id);
         }else{
             $this->response->redirect("/help?c=000");
         }
+    }
+
+    public function termsAction(){
+        $this->view->action_name = "利用規約";
+        
+    }
+
+    public function privacyAction(){
+        $this->view->action_name = "プライバシーポリシー";
     }
 }

@@ -1,5 +1,4 @@
 <h1><?= $m_note_name ?></h1>
-<?= $__FILE__ ?>
 <hr/>
 <a href="/note/page">問題作成</a><br/>
 <hr/>

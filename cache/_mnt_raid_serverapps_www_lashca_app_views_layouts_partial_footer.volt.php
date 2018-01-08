@@ -4,7 +4,7 @@
         <div class="col-md-6 col-lg-5">
           <div class="media">
             <div class="media-left">
-              <img  src="../img/logo_wh.png" width="100" alt="Lashca" title="Lashca"/>
+              <img  src="/img/logo_wh.png" width="100" alt="Lashca" title="Lashca"/>
             </div>
             <small class="media-body media-bottom">
               &copy; Lashca.com <br/>

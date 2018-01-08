@@ -11,7 +11,7 @@ class MenuController extends ControllerBase
         if(!$this->session->has("m_user_id") or !VActiveuser::findId($this->session->get("m_user_id"))->m_user_id>0){
             $this->session->start();
             $this->session->set("url", $_SERVER["REQUEST_URI"]);
-            $this->response->redirect("/signup/login");
+            $this->dispatcher->forward(array('controller' => 'signup','action' => 'login'));
         }
     }
 
