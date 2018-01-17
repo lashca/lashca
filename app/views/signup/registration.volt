@@ -3,13 +3,13 @@
         <h5 class="card-title">本登録</h5>
         <form action="/signup/registration" method="post">
             <div class="form-group row">
-                <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-10">
+                <label for="staticEmail" class="col-md-3 col-form-label">Email</label>
+                <div class="col-lg-9">
                     <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ email }}" />
                 </div>
             </div>
             <div class="form-group row">
-                <label for="staticEmail" class="col-sm-2 col-form-label">お名前</label>
+                <label for="staticEmail" class="col-md-3 col-form-label">お名前</label>
                 <div class="col">
                     <input type="text" class="form-control" name="m_user_lastname" placeholder="姓" maxlength="100" pattern="^[ぁ-んァ-ンー\w一-龠]+$" value="{{ data["m_user_lastname"] }}" required/>
                 </div>
@@ -20,12 +20,12 @@
             </div>
 
             <div class="form-group row">
-                <label for="staticEmail" class="col-sm-2 col-form-label">性別</label>
+                <label for="staticEmail" class="col-md-3 col-form-label">性別</label>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons" style="padding-left:1em;">
-                    <label class="btn btn-outline-secondary active">
-                        <input type="radio" name="m_user_sex" autocomplete="off" value="0" checked> 男性
+                    <label class="btn btn-outline-secondary {% if data["m_user_sex"] == 0 %}active{% endif %}">
+                        <input type="radio" name="m_user_sex" autocomplete="off" value="0"> 男性
                     </label>
-                    <label class="btn btn-outline-secondary">
+                    <label class="btn btn-outline-secondary {% if data["m_user_sex"] == 1 %}active{% endif %}">
                         <input type="radio" name="m_user_sex" autocomplete="off" value="1"> 女性
                     </label>
                 </div>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="staticEmail" class="col-sm-2 col-form-label">生年月日</label>
+                <label for="staticEmail" class="col-md-3 col-form-label">生年月日</label>
                 <div class="col-4">
                     <select class="form-control" name="m_user_birthday_year" id="year"><option value="">年</option></select>
                 </div>
@@ -47,8 +47,8 @@
             </div>
 
             <div class="form-group row">
-                <label for="inputPassword" class="col-sm-2 col-form-label">パスワード</label>
-                <div class="col-sm-10">
+                <label for="inputPassword" class="col-md-3 col-form-label">パスワード</label>
+                <div class="col-lg-9">
                     <input type="password" class="form-control" name="pass" id="inputPassword" minlength="8" maxlength="50" pattern="^([\w\.\-#]+)$" placeholder="パスワード" value="{{ data["pass"] }}" required/>
                     <small id="passwordHelpBlock" class="form-text text-muted">
                             8～50文字の英数記号(.-#)のみ設定可能

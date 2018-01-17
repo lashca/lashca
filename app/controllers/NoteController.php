@@ -2,6 +2,7 @@
 
 use Phalcon\Mvc\Controller;
 use Phalcon\Http\Request;
+use Phalcon\Mvc\View;
 
 class NoteController extends ControllerBase
 {
@@ -25,13 +26,34 @@ class NoteController extends ControllerBase
             $holdingnotes = new VHoldingnotes();
             $holdingnotes->m_user_id = $this->session->get("m_user_id");
             $holdingnotes->m_note_name = $this->data['m_note_name'];
-            if ($holdingnotes->save() === false)
+            if ($holdingnotes->insertNote() === false)
             {
                 $message = $this->getErrorMessages($holdingnotes);
                 if(count($message)==0)$this->response->redirect("/help?c=000");
                 $this->view->setVar("errormessage", $message);
             }else{
                 $this->response->redirect("/menu");
+            }
+        }
+    }
+
+    public function renameAction()
+    {
+        $request = new Request();
+        $this->session->start();
+        $this->view->setRenderLevel(View::LEVEL_LAYOUT);
+        if ($request->isAjax() == true) {
+            $holdingnotes = new VHoldingnotes();
+            $holdingnotes->m_user_id = $this->session->get("m_user_id");
+            $holdingnotes->m_note_name = $this->data['m_note_name'];
+            $holdingnotes->m_holdingnote_no = $this->data['m_holdingnote_no'];
+            if(VHoldingnotes::findHoldingNo($holdingnotes->m_user_id,$holdingnotes->m_holdingnote_no) == null){
+                echo "購入したノート名は変更できません";
+            }elseif ($holdingnotes->updateNote() === false){
+                $message = $this->getErrorMessages($holdingnotes);
+                echo $message["m_note_name"];
+            }else{
+                echo "ok";
             }
         }
     }

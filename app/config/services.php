@@ -105,8 +105,9 @@ $di->set('flash', function () {
  * Start the session the first time some component request the session service
  */
 $di->setShared('session', function () {
-    ini_set('session.gc_maxlifetime', 14400);
-    session_set_cookie_params(14400, "/", "lashca.com", true, true);
+    session_name("LashcaID");
+    ini_set('session.gc_maxlifetime', 0);
+    session_set_cookie_params(0, "/", "lashca.com", true, true);
     $session = new SessionAdapter();
     $session->start();
 

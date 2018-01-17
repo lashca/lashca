@@ -44,6 +44,7 @@ class ControllerBase extends Controller
     public function trimSpace($array){
         $array = array_map(function($val){return preg_replace('/^[ 　]+/u', '', $val);}, $array);
         $array = array_map(function($val){return preg_replace('/[ 　]+$/u', '', $val);}, $array);
+        $array = array_map(function($val){return htmlspecialchars($val, ENT_QUOTES, 'UTF-8', false);},$array);
         return array_map('trim',$array);
     }
 }

@@ -106,12 +106,14 @@ class VHoldingnotes extends ModelBase
         $validator->add(
             'm_note_name',
             new StringLength([
-                "max"            => 10,
-                "min"            => 0,
-                "messageMaximum" => "10".$this->messageMaximumMes,
-                "messageMinimum" => "0".$this->messageMinimumMes,
+                "max"            => 30,
+                "min"            => 1,
+                "messageMaximum" => "20".$this->messageMaximumMes,
+                "messageMinimum" => "1".$this->messageMinimumMes,
             ])
         );
+
+        return $this->validate($validator);
     }
 
     /**
@@ -167,6 +169,11 @@ class VHoldingnotes extends ModelBase
         return $m_holdingnote_no = parent::find(array("conditions" => "m_user_id = ".$m_user_id));
     }
 
+    public static function findHoldingNo($m_user_id,$m_holdingnote_no)
+    {
+        return parent::findFirst(array("conditions" => "m_user_id = ".$m_user_id." and m_holdingnote_no = ".$m_holdingnote_no." and m_note_profit = 0"));
+    }
+
     public function save($data=null, $whiteList=null)
     {
         $txManager = new TxManager();
@@ -176,18 +183,21 @@ class VHoldingnotes extends ModelBase
 
         $holdingnotes->setTransaction($transaction);
         $note->setTransaction($transaction);
-
-        $this->m_holdingnote_no = VHoldingnotes::findNextHoldingNo($this->m_user_id);
         
         $savedata = array(
             "m_note_id" => $this->m_note_id,
             "m_user_id" => $this->m_user_id,
             "m_note_name" => $this->m_note_name,
             "m_holdingnote_no" => $this->m_holdingnote_no,
+            "m_notecategory_id" => $this->m_notecategory_id,
+            "m_holdingnote_starttime" => $this->m_holdingnote_starttime,
+            "m_holdingnote_endtime" => $this->m_holdingnote_endtime,
+            "m_note_profit" => $this->m_note_profit,
+            "m_note_price" => $this->m_note_price,
+            "m_note_no" => $this->m_note_no,
         );
 
         if($this->validation()===false){
-            $transaction->rollback();
             return false;
         }
         $note->save($savedata);
@@ -202,6 +212,23 @@ class VHoldingnotes extends ModelBase
         }else{
             return false;
         }
+    }
+
+    public function insertNote(){
+        $this->m_holdingnote_no = VHoldingnotes::findNextHoldingNo($this->m_user_id);
+        return $this->save();
+    }
+
+    public function updateNote(){
+        $holdingnotes = VHoldingnotes::findHoldingNo($this->m_user_id,$this->m_holdingnote_no);
+        $this->m_notecategory_id = $holdingnotes->m_notecategory_id;
+        $this->m_note_id = $holdingnotes->m_note_id;
+        $this->m_holdingnote_starttime = $holdingnotes->m_holdingnote_starttime;
+        $this->m_holdingnote_endtime = $holdingnotes->m_holdingnote_endtime;
+        $this->m_note_profit = $holdingnotes->m_note_profit;
+        $this->m_note_price = $holdingnotes->m_note_price;
+        $this->m_note_no = $holdingnotes->m_note_no;
+        return $this->save();
     }
 
 }

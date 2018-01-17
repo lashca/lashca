@@ -81,6 +81,8 @@ class SignupController extends ControllerBase
             $avtiveuser->m_user_birthday = $this->data['m_user_birthday_year']."-".$this->data['m_user_birthday_month']."-".$this->data['m_user_birthday_day'];
             $avtiveuser->pass = $this->data['pass'];
             $avtiveuser->m_user_mail = $this->session->get("m_semiuser_mail");
+            $avtiveuser->m_user_hash = hash_hmac("sha256",$avtiveuser->pass,$this->secret);
+            $avtiveuser->m_user_registereddate = date("Y-m-d H:i:s",time());
             if ($avtiveuser->save() === false)
             {
                 $message = $this->getErrorMessages($avtiveuser);

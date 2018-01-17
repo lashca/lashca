@@ -243,9 +243,6 @@ class VActiveuser extends ModelBase
 
         $user->setTransaction($transaction);
         $activeuser->setTransaction($transaction);
-
-        $this->m_user_hash = hash_hmac("sha256",$this->pass,$this->secret);
-        $this->m_user_registereddate = date("Y-m-d H:i:s",time());
         
         $savedata = array(
             "m_user_id" => $this->m_user_id,
